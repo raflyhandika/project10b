@@ -5,29 +5,37 @@
 </head>
 <body>
 
-    <h2>Data yang Dikirim dengan Metode GET</h2>
+<h2>Data yang Dikirim dengan Metode GET</h2>
 
-    <?php
-    echo "NIM : " . $_GET['nim'] . "<br>";
-    echo "Nama : " . $_GET['nama'] . "<br>";
-    echo "Tempat Lahir : " . $_GET['tempat_lahir'] . "<br>";
-    echo "Tanggal Lahir : " . $_GET['tanggal_lahir'] . "<br>";
-    echo "Alamat : " . $_GET['alamat'] . "<br>";
-    
-    echo "Nomor HP : " . $_GET['no_hp'] . "<br>";
-    echo "Umur : " . $_GET['umur'] . " tahun<br>";
+<?php
+    $nim = $_GET['nim'] ?? '-';
+    $nama = $_GET['nama'] ?? '-';
+    $umur = $_GET['umur'] ?? '-';
+    $tempat_lahir = $_GET['tempat_lahir'] ?? '-';
+    $tanggal_lahir = $_GET['tanggal_lahir'] ?? '-';
+    $no_hp = $_GET['no_hp'] ?? '-';
+    $alamat = $_GET['alamat'] ?? '-';
+    $kota = $_GET['kota'] ?? '-';
+    $email = $_GET['email'] ?? '-';
 
-    $kota = $_GET['kota'];
-    if ($kota == "Semarang") {
-        echo "Kota : Semarang<br>";
-    } elseif ($kota == "Solo") {
-        echo "Kota : Solo<br>";
-    } elseif ($kota == "Salatiga") {
-        echo "Kota : Salatiga<br>";
-    } elseif ($kota == "Kudus") {
-        echo "Kota : Kudus<br>";
+    echo "NIM : " . $nim . "<br>";
+    echo "Nama : " . $nama . "<br>";
+    echo "Umur : " . $umur . "<br>";
+    echo "Tempat Lahir : " . $tempat_lahir . "<br>";
+    echo "Tanggal Lahir : " . $tanggal_lahir . "<br>";
+    echo "No HP : " . $no_hp . "<br>";
+    echo "Alamat : " . $alamat . "<br>";
+    echo "Kota : " . $kota . "<br>";
+
+    if (isset($_GET['jk'])) {
+        $jk = $_GET['jk'];
+        if ($jk == "Laki - Laki") {
+            echo "Jenis Kelamin : Laki - Laki<br>";
+        } else {
+            echo "Jenis Kelamin : Perempuan<br>";
+        }
     } else {
-        echo "Kota : Pekalongan<br>";
+        echo "Jenis Kelamin : Belum dipilih<br>";
     }
 
     if (isset($_GET['status'])) {
@@ -36,30 +44,17 @@
         echo "Status : Belum dipilih<br>";
     }
 
-    if (isset($_GET['jk'])) {
-        $jk = $_GET['jk'];
-        if ($jk == "Laki-laki") {
-            echo "Jenis Kelamin : Laki-laki<br>";
-        } else {
-            echo "Jenis Kelamin : Perempuan<br>";
+    echo "Hobi : ";
+    if (!empty($_GET['hobi'])) { 
+        foreach ($_GET['hobi'] as $hobi_item) {
+            echo $hobi_item . ", ";
         }
     } else {
-        echo "Jenis Kelamin : Belum dipilih<br>";
+        echo "Tidak Memiliki Hobi";
     }
 
-    echo "Hobi : ";
-    if (isset($_GET['hobi'])) {
-        $hobi_list = $_GET['hobi']; 
-        
+    echo "<br>Email : " . $email . "<br>";
+?>
 
-        echo implode(", ", $hobi_list); 
-        
-    } else {
-        echo "-"; 
-    }
-    echo "<br>";
-
-    echo "Email : " . $_GET['email'] . "<br>";
-    ?>
 </body>
 </html>

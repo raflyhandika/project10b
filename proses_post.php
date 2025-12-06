@@ -1,65 +1,91 @@
+<?php
+// 1. FUNGSI SANITASI & VALIDASI
+function bersihkan($data) {
+    return htmlspecialchars($data, ENT_QUOTES, 'UTF-8');
+}
+
+function validasiNama($nama) {
+    if (empty($nama)) return "Nama tidak boleh kosong.";
+    if (!preg_match("/^[a-zA-Z\s]+$/", $nama)) return "Nama hanya boleh huruf.";
+    return true;
+}
+
+function validasiUmur($umur) {
+    if (empty($umur)) return "Umur tidak boleh kosong.";
+    if (!is_numeric($umur)) return "Umur harus angka.";
+    return true;
+}
+
+// 2. AMBIL DATA (Pakai ?? '-' agar tidak error jika kosong)
+$nim = bersihkan($_POST['nim'] ?? '-');
+$nama = bersihkan($_POST['nama'] ?? '-');
+$umur = bersihkan($_POST['umur'] ?? '-');
+$tempat_lahir = bersihkan($_POST['tempat_lahir'] ?? '-');
+$tanggal_lahir = bersihkan($_POST['tanggal_lahir'] ?? '-');
+$no_hp = bersihkan($_POST['no_hp'] ?? '-');
+$alamat = bersihkan($_POST['alamat'] ?? '-');
+$email = bersihkan($_POST['email'] ?? '-');
+$kota = bersihkan($_POST['kota'] ?? '-');
+$jk = isset($_POST['jk']) ? bersihkan($_POST['jk']) : "Belum dipilih";
+$status = isset($_POST['status']) ? bersihkan($_POST['status']) : "Belum dipilih";
+
+// Hobi
+$hobi_list = [];
+if (!empty($_POST['hobi'])) {
+    foreach ($_POST['hobi'] as $h) {
+        $hobi_list[] = bersihkan($h);
+    }
+    $hobi_output = implode(", ", $hobi_list);
+} else {
+    $hobi_output = "Tidak ada hobi";
+}
+
+// 3. CEK VALIDASI SERVER-SIDE
+$cek_nama = validasiNama($nama);
+$cek_umur = validasiUmur($umur);
+
+// Jika validasi gagal, stop program dan tampilkan pesan error
+if ($cek_nama !== true) die("<h3 style='color:red; text-align:center;'>Error: $cek_nama <br><a href='F_POST.php'>Kembali</a></h3>");
+if ($cek_umur !== true) die("<h3 style='color:red; text-align:center;'>Error: $cek_umur <br><a href='F_POST.php'>Kembali</a></h3>");
+?>
+
 <!DOCTYPE html>
-<html>
+<html lang="id">
 <head>
-    <title>Hasil Input POST</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hasil Data POST</title>
+    <style>
+        /* CSS AGAR RAPI (Sesuai instruksi modif CSS) */
+        body { font-family: sans-serif; padding: 20px; background-color: #f4f4f4; }
+        .container { max-width: 600px; margin: auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        table { width: 100%; border-collapse: collapse; }
+        td { padding: 10px; border-bottom: 1px solid #ddd; }
+        .btn { display: inline-block; margin-top: 15px; padding: 10px 15px; background: #333; color: #fff; text-decoration: none; border-radius: 5px; }
+        @media (max-width: 600px) { .container { width: 100%; } }
+    </style>
 </head>
 <body>
 
-    <h2>Data yang Dikirim dengan Metode POST</h2>
-
-    <?php
-    echo "NIM : " . $_POST['nim'] . "<br>";
-    echo "Nama : " . $_POST['nama'] . "<br>";
-    echo "Tempat Lahir : " . $_POST['tempat_lahir'] . "<br>";
-    echo "Tanggal Lahir : " . $_POST['tanggal_lahir'] . "<br>";
-    echo "Alamat : " . $_POST['alamat'] . "<br>";
+<div class="container">
+    <h2>Data yang Dikirim (POST)</h2>
+    <table>
+        <tr><td>NIM</td><td>: <?= $nim ?></td></tr>
+        <tr><td>Nama</td><td>: <?= $nama ?></td></tr>
+        <tr><td>Umur</td><td>: <?= $umur ?></td></tr>
+        <tr><td>Tempat Lahir</td><td>: <?= $tempat_lahir ?></td></tr>
+        <tr><td>Tanggal Lahir</td><td>: <?= $tanggal_lahir ?></td></tr>
+        <tr><td>No HP</td><td>: <?= $no_hp ?></td></tr>
+        <tr><td>Alamat</td><td>: <?= $alamat ?></td></tr>
+        <tr><td>Kota</td><td>: <?= $kota ?></td></tr>
+        <tr><td>Jenis Kelamin</td><td>: <?= $jk ?></td></tr>
+        <tr><td>Status</td><td>: <?= $status ?></td></tr>
+        <tr><td>Hobi</td><td>: <?= $hobi_output ?></td></tr>
+        <tr><td>Email</td><td>: <?= $email ?></td></tr>
+    </table>
     
-    echo "Nomor HP : " . $_POST['no_hp'] . "<br>";
-    echo "Umur : " . $_POST['umur'] . " tahun<br>";
+    <a href="F_POST.php" class="btn">Kembali ke Form</a>
+</div>
 
-    $kota = $_POST['kota'];
-    if ($kota == "Semarang") {
-        echo "Kota : Semarang<br>";
-    } elseif ($kota == "Solo") {
-        echo "Kota : Solo<br>";
-    } elseif ($kota == "Salatiga") {
-        echo "Kota : Salatiga<br>";
-    } elseif ($kota == "Kudus") {
-        echo "Kota : Kudus<br>";
-    } else {
-        echo "Kota : Pekalongan<br>";
-    }
-
-    if (isset($_POST['status'])) {
-        echo "Status : " . $_POST['status'] . "<br>";
-    } else {
-        echo "Status : Belum dipilih<br>";
-    }
-
-    if (isset($_POST['jk'])) {
-        $jk = $_POST['jk'];
-        if ($jk == "Laki-laki") {
-            echo "Jenis Kelamin : Laki-laki<br>";
-        } else {
-            echo "Jenis Kelamin : Perempuan<br>";
-        }
-    } else {
-        echo "Jenis Kelamin : Belum dipilih<br>";
-    }
-
-    echo "Hobi : ";
-    if (isset($_POST['hobi'])) {
-        $hobi_list = $_POST['hobi']; 
-        
-
-        echo implode(", ", $hobi_list); 
-        
-    } else {
-        echo "-"; 
-    }
-    echo "<br>";
-
-    echo "Email : " . $_POST['email'] . "<br>";
-    ?>
 </body>
 </html>
